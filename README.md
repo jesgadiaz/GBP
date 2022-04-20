@@ -52,7 +52,11 @@ You are now ready to use Gurobi from within Anaconda. Your next step is to launc
 Change "folder" and "folder_dataset" in the code to point to your dataset. Then, execute the code in the Anaconda prompt.
 
 ```
-$ python burning.py
+$ python ILP.py
+```
+or
+```
+$ python CSP+BS.py
 ```
 
-The burning number and running time will be written in log.txt and the optimal solutions in sols.txt.
+Notice that the returned optimal burning sequence have vertices enumerated from 0 to n.
