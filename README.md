@@ -14,7 +14,7 @@ Source: https://www.gurobi.com/gurobi-and-anaconda-for-windows/
 
 ### Step one: Download and install Anaconda
 
-Gurobi supports Python 2.7 and 3.7 for Windows. burning.py is written with Python 3.X. Please choose the version of Anaconda you wish to download (the download will start automatically):
+Gurobi supports Python 2.7 and 3.7 for Windows. However, to run our code install Python 3.X. Please choose the version of Anaconda you wish to download (the download will start automatically):
 
 Once the download is complete, click on it to run the installer.
 
