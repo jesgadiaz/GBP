@@ -59,4 +59,4 @@ or
 $ python CSP+BS.py
 ```
 
-Notice that the returned optimal burning sequence have vertices enumerated from 0 to n.
+The returned optimal burning sequence have vertices enumerated from 0 to n.
