@@ -4,7 +4,8 @@ This repository contains two mathematical formulations for the graph burning pro
 | Name  | Description |
 | ------------- | ------------- |
 | ILP  | integer linear program  |
-| CSP+BS  | constraint satisfaction problem + binary search  |
+| CSP1+BS  | constraint satisfaction problem 1 + binary search  |
+| CSP2+BS  | constraint satisfaction problem 2 + binary search  |
 
 To execute the implemented formulations you need to install Gurobi.
 
@@ -56,7 +57,11 @@ $ python ILP.py
 ```
 or
 ```
-$ python CSP+BS.py
+$ python CSP1+BS.py
+```
+or
+```
+$ python CSP2+BS.py
 ```
 
 The returned optimal burning sequence have vertices enumerated from 0 to n.
