@@ -70,4 +70,4 @@ The returned optimal burning sequence have vertices enumerated from 0 to n.
 
 Use the Jupyter notebook 'Verify and Draw' to get images like the following:
 
-![alt text](https://github.com/jesgadiaz/GBP/blob/main/imgs/ca-netscience.pdf)
+![Optional Text](../master/imgs/ca-netscience.pdf)
