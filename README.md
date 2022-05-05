@@ -65,3 +65,9 @@ $ python CSP2+BS.py
 ```
 
 The returned optimal burning sequence have vertices enumerated from 0 to n.
+
+## Optionally, you can verify and draw your solutions
+
+Use the Jupyter notebook 'Verify and Draw' to get images like the following:
+
+![alt text](http://url/to/img.png)
