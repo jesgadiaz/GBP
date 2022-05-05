@@ -72,3 +72,4 @@ Use the Jupyter notebook 'Verify and Draw' to get images like the following:
 
 ![image](https://user-images.githubusercontent.com/9120537/166971257-b061ca13-9fd0-4d12-9d97-77f1d9425efd.png)
 
+![image](https://user-images.githubusercontent.com/9120537/166972048-6a803766-f5b6-4108-a3b4-75960313c376.png)
