@@ -1,11 +1,11 @@
 # Mathematical formulations for graph burning
 This repository contains two mathematical formulations for the graph burning problem:
 
-| Name  | Description |
-| ------------- | ------------- |
-| ILP  | integer linear program  |
-| CSP1+BS  | constraint satisfaction problem 1 + binary search  |
-| CSP2+BS  | constraint satisfaction problem 2 + binary search  |
+| Name  | Description | Constraints | Variables |
+| ------------- | ------------- | -------------  | ------------- |
+| ILP  | integer linear program  | O(nU) | O(nU) |
+| CSP1+BS  | constraint satisfaction problem 1 + binary search  | O(nU) | O(nU) |
+| CSP2+BS  | constraint satisfaction problem 2 + binary search  | O(n^2) | O(n^2) |
 
 To execute the implemented formulations you need to install Gurobi.
 
