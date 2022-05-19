@@ -78,4 +78,4 @@ Use the Jupyter notebook 'Verify and Draw' to get images like the following:
 
 ## Anyway, What is graph burning?
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/oxX8ONv_8Pk/0.jpg)]([https://www.youtube.com/watch?v=oxX8ONv_8Pk&t](https://www.youtube.com/watch?v=oxX8ONv_8Pk&t))
+[![Click me](https://img.youtube.com/vi/oxX8ONv_8Pk/0.jpg)]([https://www.youtube.com/watch?v=oxX8ONv_8Pk]([https://www.youtube.com/watch?v=oxX8ONv_8Pk](https://www.youtube.com/watch?v=oxX8ONv_8Pk))
