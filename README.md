@@ -75,3 +75,7 @@ Use the Jupyter notebook 'Verify and Draw' to get images like the following:
 ![image](https://user-images.githubusercontent.com/9120537/166973826-10c61d4a-d922-4369-b7ac-c2c902f9ba51.png)
 
 ![image](https://user-images.githubusercontent.com/9120537/166975421-81a684a5-1940-4839-bb00-87ef163099fb.png)
+
+## Anyway, What is graph burning?
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/v=oxX8ONv_8Pk/0.jpg)]([https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE](https://www.youtube.com/watch?v=oxX8ONv_8Pk&t))
