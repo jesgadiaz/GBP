@@ -5,9 +5,14 @@ import time
 import networkx as nx
 import random
 
+def callback_incumbent_logger(model, where):
+    global t_incumbent
+    if where == GRB.Callback.MIPSOL:
+        t_incumbent = model.cbGet(GRB.Callback.RUNTIME)
+
 def createGraph(input_file):
-    global G, n, m, d, start_time, apsp_time, n_nodes, n_edges, conn_comp, av_degree, density
-    
+    global t_incumbent,  G, n, m, d, start_time, apsp_time, n_nodes, n_edges, conn_comp, av_degree, density
+    t_incumbent = float("inf")
     G = nx.Graph()
     for j in range(0,n):
         G.add_node(j)
@@ -82,7 +87,7 @@ def createGraph(input_file):
     print("---Compute all pairs shortest path - running time: %s seconds ---" % (time.time() - start_time))
     
 def run(mid):
-    global total_runtime, runtime, n, m, d, feasible, best_sequence
+    global t_incumbent, total_runtime, runtime, n, m, d, feasible, best_sequence
     try:
         m = Model("mip1")
         m.Params.outputFlag = 0  # 0 - Off  //  1 - On
@@ -133,48 +138,48 @@ def run(mid):
         
         #---------------------------- CONSTRAINTS ---------------------------------------------------------
         
-        m.addConstr(sum(x) == k) #--------------------------------------------(2.2)
+        m.addConstr(sum(x) == k) #--------------------------------------------(3.2)
         
-        for i in range(n): #--------------------------------------------------(2.3)
+        for i in range(n): #--------------------------------------------------(3.3)
             m.addConstr(x[i] <= p[i])
             
-        for i in range(n): #--------------------------------------------------(2.4)
+        for i in range(n): #--------------------------------------------------(3.4)
             m.addConstr(p[i] <= x[i] * k)
             
         z_transpose = np.array(z).T.tolist()
-        for j in range(k): #--------------------------------------------------(2.5)
+        for j in range(k): #--------------------------------------------------(3.5)
             m.addConstr(sum(z_transpose[j]) == 1)     
         
-        for i in range(n): #--------------------------------------------------(2.6)
+        for i in range(n): #--------------------------------------------------(3.6)
             m.addConstr(sum(z[i]) == 1)
         
         q = []
         for i in range(k):
             q.append(i+1)
         q_np = np.array(q)
-        for i in range(n): #--------------------------------------------------(2.7)
+        for i in range(n): #--------------------------------------------------(3.7)
             z_np = np.array(z[i])
             m.addConstr(p[i] == sum(q_np * z_np[:-1]))
             
-        for i in range(n): #--------------------------------------------------(2.8)
+        for i in range(n): #--------------------------------------------------(3.8)
             for j in range(n):
                 m.addConstr(y[i][j] <= x[i])        
                 
-        for i in range(n): #--------------------------------------------------(2.9)
+        for i in range(n): #--------------------------------------------------(3.9)
             for j in range(n):
                 m.addConstr((x[i] * d[i][j]) + p[i] <= x[i] * (k) + (1-y[i][j]) * M )
         
-        for i in range(n): #--------------------------------------------------(2.10)
+        for i in range(n): #--------------------------------------------------(3.10)
             for j in range(n):
                 m.addConstr((x[i] * d[i][j]) + p[i] >= x[i] * (k + epsilon) - (y[i][j] * M))
                 
         y_transpose = np.array(y).T.tolist()
-        for j in range(n): #--------------------------------------------------(2.11)
+        for j in range(n): #--------------------------------------------------(3.11)
             m.addConstr(sum(y_transpose[j]) >= 1)    
                 
         #---------------------------- OPTIMIZATION -------------------------------------------------------
         
-        m.optimize()
+        m.optimize(callback_incumbent_logger)
         runtime = m.Runtime
         if m.status == GRB.INFEASIBLE:
             feasible = False
@@ -221,6 +226,7 @@ def binarySearch(L, B):
         mid = math.floor((upper + lower) /2)
         run(mid)
         print("MID: " + str(mid))
+        print("t_incumbent: " + str(t_incumbent))
         total_runtime = total_runtime + runtime
         if feasible == True:
             upper = mid - 1
@@ -242,10 +248,11 @@ def main(n_in, m_in, input_file_in, L, U):
     
 if __name__ == "__main__":
     global instance
-    folder_dataset = 'C:/Users/jgd/Documents/GBP/dataset/paths/'
+    folder_dataset = 'C:/Users/perro/Documents/GBP/paperILP/'
+    #folder_dataset = 'C:/Users/perro/Documents/GBP/erdos/'
+    print("Gurobi version: " + str(gurobipy.gurobi.version()))
     dataset = [
-        ['path16.mtx',16,15,2,6], # instance, n, m, L, U
-        ['path25.mtx',25,24,3,7], # instance, n, m, L, U  
+        ['path16.mtx',16,15,2,6]        
         ]
     for i in range(len(dataset)):
         print("--------------------------------------------------------------")
