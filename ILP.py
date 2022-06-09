@@ -5,8 +5,15 @@ import time
 import networkx as nx
 import random
 
+def callback_incumbent_logger(model, where):
+    global t_incumbent
+    if where == GRB.Callback.MIPSOL:
+        t_incumbent = model.cbGet(GRB.Callback.RUNTIME)
+
 def createGraph(input_file):
-    global G, n, m, a0, start_time, apsp_time, n_nodes, n_edges, conn_comp, av_degree, density, card_comp
+    global t_incumbent, G, n, m, a0, start_time, apsp_time, n_nodes, n_edges, conn_comp, av_degree, density, card_comp
+    
+    t_incumbent = math.inf
     
     G = nx.Graph()
     for j in range(0,n):
@@ -48,7 +55,7 @@ def run():
         m.setParam("Presolve", 2); # -1 - Automatic // 0 - Off // 1 - Conservative // 2 - Aggresive 
         #m.setParam("PreQLinearize", -1); # -1 - Automatic // 0 - Off // 1 - Strong LP relaxation // 2 - Compact relaxation
         #m.params.BestObjStop = k
-        m.setParam("TimeLimit", 2*3600)
+        m.setParam("TimeLimit", 2000)
         
         # ------------------------------INPUT --------------------------------
         T = T_input
@@ -91,11 +98,15 @@ def run():
         
         #---------------------------- CONSTRAINTS ---------------------------------------------------------
 
-        b0 = [] #-------------------------------------------------------------(1.6)--
-        s0 = [] #-------------------------------------------------------------(1.7)--
+        b0 = [] 
+        s0 = [] 
         for i in range(n):
             b0.append(0)
             s0.append(0)
+
+        for i in range(n): #--------------------------------------------------(1.3)--
+            for j in range(T):
+                m.addConstr(b[i][j] >= s[i][j])
         
         for i in range(n): #--------------------------------------------------(1.2)--
             for j in range(T):
@@ -104,7 +115,7 @@ def run():
                 else:
                     m.addConstr(s[i][j] >= s[i][j-1])
 
-        for i in range(n): #--------------------------------------------------(1.3)--
+        for i in range(n): #--------------------------------------------------(1.4)--
             for j in range(T):
                 for k in G.neighbors(i):
                     if j == 0:
@@ -112,25 +123,32 @@ def run():
                     else:
                         m.addConstr(b[i][j] >= b[k][j-1])
                         
-        for i in range(n): #---------------------------------------------------(1.4)--
-            for j in range(T):
-                for k in G.neighbors(i):
-                    if j == 0:
-                        m.addConstr(b[i][j] >= s0[k])
-                    else:
-                        m.addConstr(b[i][j] >= s[k][j-1])
-                    
+        #for i in range(n): #---------------------------------------------------(1.4)--
+        #    for j in range(T):
+        #        closed_neighbors = [n for n in G.neighbors(i)]
+        #        closed_neighbors.append(i)
+                #for k in G.neighbors(i):
+        #        for k in closed_neighbors:
+        #            if j == 0:
+        #                m.addConstr(b[i][j] >= s0[k])
+        #            else:
+        #                m.addConstr(b[i][j] >= s[k][j-1])
+        
         for i in range(n): #--------------------------------------------------(1.5)
             for j in range(T):
                 sum_ = 0
-                for k in G.neighbors(i):
+                closed_neighbors = [n for n in G.neighbors(i)]
+                closed_neighbors.append(i)
+                for k in closed_neighbors:
                     if j == 0:
-                        sum_ = sum_ + b0[k] + s0[k]
+                        sum_ = sum_ + b0[k]
                     else:
-                        sum_ = sum_ + b[k][j-1] + s[k][j-1]
+                        sum_ = sum_ + b[k][j-1]
+                sum_ += s[i][j]
                 m.addConstr(b[i][j] <= sum_)
+                    
 
-        s_transpose = np.array(s).T.tolist()# --------------------------------(1.8)--
+        s_transpose = np.array(s).T.tolist()# --------------------------------(1.6)--
         for i in range(T):
             if i == 0:
                 sum_ = 0
@@ -142,18 +160,12 @@ def run():
                 for j in range(n):
                     sum_ = sum_ + s[j][i] - s[j][i-1]
                 m.addConstr(sum_ == 1)
-                
-        for i in range(n): #--------------------------------------------------(1.9)--
-            for j in range(T):
-                m.addConstr(z[i][j] >= b[i][j])
-                m.addConstr(z[i][j] >= s[i][j])
-                m.addConstr(z[i][j] <= b[i][j] + s[i][j])
         
-        for j in range(T): #--------------------------------------------------(1.9)--
+        for j in range(T): #--------------------------------------------------(1.7)--
             sum_ = 0
             for i in range(n):
-                sum_ = sum_ + z[i][j]
-                m.addConstr(b_prime[j] <= z[i][j])
+                sum_ = sum_ + b[i][j]
+                m.addConstr(b_prime[j] <= b[i][j])
             m.addConstr(b_prime[j] >= sum_ - (n-1))
                         
 
@@ -168,12 +180,13 @@ def run():
                 
         #---------------------------- OPTIMIZATION -------------------------------------------------------
         
-        m.optimize()
+        m.optimize(callback_incumbent_logger)
         runtime = m.Runtime
         if m.status == GRB.INFEASIBLE:
             feasible = False
         else:
             print("Obj:", m.objVal)
+            print("t_incumbent:" + str(t_incumbent))
             feasible = True
             b_out       = []
             s_out       = []
@@ -248,10 +261,11 @@ def main(n_in, m_in, input_file_in, L, U):
     
 if __name__ == "__main__":
     global instance, T_input
-    folder_dataset = 'C:/Users/jgd/Documents/GBP/dataset/paths/'
+    folder_dataset = 'C:/Users/perro/Documents/GBP/paperILP/'
+    #folder_dataset = 'C:/Users/perro/Documents/GBP/erdos/'
     dataset = [
-        ['path16.mtx',16,15,2,6], # instance, n, m, L, U
-        ['path25.mtx',25,24,3,7], # instance, n, m, L, U
+        ['ca-netscience.mtx',379,914,2,10], # instance, n, m, L, U
+        ['karate.mtx',34,78,1,6], # instance, n, m, L, U
         ]
     for i in range(len(dataset)):
         print("--------------------------------------------------------------")
@@ -262,4 +276,3 @@ if __name__ == "__main__":
         L = dataset[i][3]
         U = dataset[i][4]
         main(n, m, folder_dataset + dataset[i][0], L, U)
-        
