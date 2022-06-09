@@ -1,10 +1,14 @@
-
 from gurobipy import *
 import math
 import numpy as np
 import time
 import networkx as nx
 import random
+
+def callback_incumbent_logger(model, where):
+    global t_incumbent
+    if where == GRB.Callback.MIPSOL:
+        t_incumbent = model.cbGet(GRB.Callback.RUNTIME)
 
 def createGraph(input_file):
     global G, n, m, start_time, n_nodes, n_edges, conn_comp, av_degree, density, card_comp
@@ -41,7 +45,9 @@ def createGraph(input_file):
     print("---Compute all pairs shortest path - running time: %s seconds ---" % (time.time() - start_time))
 
 def run(k, max_time):
-    global G, runtime, n, m, feasible, best_sequence, sol_size
+    global t_incumbent, G, runtime, n, m, feasible, best_sequence, sol_size
+    
+    t_incumbent = float("inf")
     try:
         m = Model("mip1")
         m.Params.outputFlag = 0  # 0 - Off  //  1 - On
@@ -89,14 +95,18 @@ def run(k, max_time):
             b0.append(0)
             s0.append(0)
         
-        for i in range(n): #--------------------------------------------------(1.2)--
+        for i in range(n): #--------------------------------------------------(2.2)--
             for j in range(T):
                 if j == 0:
                     m.addConstr(s[i][j] >= s0[i])
                 else:
                     m.addConstr(s[i][j] >= s[i][j-1])
 
-        for i in range(n): #--------------------------------------------------(1.3)--
+        for i in range(n): #--------------------------------------------------(2.3)--
+            for j in range(T):
+                m.addConstr(b[i][j] >= s[i][j])
+
+        for i in range(n): #--------------------------------------------------(2.4)--
             for j in range(T):
                 for k in G.neighbors(i):
                     if j == 0:
@@ -104,25 +114,26 @@ def run(k, max_time):
                     else:
                         m.addConstr(b[i][j] >= b[k][j-1])
                         
-        for i in range(n): #---------------------------------------------------(1.4)--
-            for j in range(T):
-                for k in G.neighbors(i):
-                    if j == 0:
-                        m.addConstr(b[i][j] >= s0[k])
-                    else:
-                        m.addConstr(b[i][j] >= s[k][j-1])
+        #for i in range(n): #---------------------------------------------------(1.4)--
+        #    for j in range(T):
+        #        for k in G.neighbors(i):
+        #            if j == 0:
+        #                m.addConstr(b[i][j] >= s0[k])
+        #            else:
+        #                m.addConstr(b[i][j] >= s[k][j-1])
                     
-        for i in range(n): #--------------------------------------------------(1.5)
+        for i in range(n): #--------------------------------------------------(2.5)
             for j in range(T):
                 sum_ = 0
                 for k in G.neighbors(i):
                     if j == 0:
-                        sum_ = sum_ + b0[k] + s0[k]
+                        sum_ = sum_ + b0[k]
                     else:
-                        sum_ = sum_ + b[k][j-1] + s[k][j-1]
+                        sum_ = sum_ + b[k][j-1]
+                sum_ += s[i][j]
                 m.addConstr(b[i][j] <= sum_)
 
-        s_transpose = np.array(s).T.tolist()# --------------------------------(1.6)--
+        s_transpose = np.array(s).T.tolist()# --------------------------------(2.6)--
         for i in range(T):
             if i == 0:
                 sum_ = 0
@@ -135,12 +146,9 @@ def run(k, max_time):
                     sum_ = sum_ + s[j][i] - s[j][i-1]
                 m.addConstr(sum_ == 1)
 
-        # most important constraint                        
-        for i in range(n): #--------------------------------------------------( )--
-            m.addConstr(z[i] >= b[i][T-1])
-            m.addConstr(z[i] >= s[i][T-1])
-            m.addConstr(z[i] <= b[i][T-1] + s[i][T-1])
-        m.addConstr(sum(z) == n)
+        b_transpose = np.array(b).T.tolist()
+        # most important constraint  
+        m.addConstr(sum(b_transpose[T-1]) == n) #-------------------------------(2.7)--
 
         #---------------------------- OBJECTIVE FUNCTION --------------------------------------------------
         
@@ -148,13 +156,14 @@ def run(k, max_time):
                 
         #---------------------------- OPTIMIZATION -------------------------------------------------------
         
-        m.optimize()
+        m.optimize(callback_incumbent_logger)
         runtime = m.Runtime
         if m.status == GRB.INFEASIBLE:
             feasible = False
         else:
             try:
                 print("Obj:", m.objVal)
+                print("t_incumbent:" + str(t_incumbent))
                 feasible = True
                 b_out       = []
                 s_out       = []
@@ -238,14 +247,14 @@ def run(k, max_time):
     
 if __name__ == "__main__":
     global instance, T_input, best_sequence, sol_size, start_time, time_out
-    folder_dataset = 'C:/Users/jgd/Documents/GBP/dataset/paths/'
+    folder_dataset = 'C:/Users/perro/Documents/GBP/paperILP/'
     dataset = [
-        ['path16.mtx' ,16 ,15 ,2 ,6] # instance, n, m, L, U
+        ['path16.mtx',16,15,2,6]
         ]
     for i in range(len(dataset)):
         print("--------------------------------------------------------------")
         #max_time = 10*3600
-        max_time = 2000
+        max_time = 200000000
         input_file = folder_dataset + dataset[i][0]
         instance = dataset[i][0]
         n = dataset[i][1]
