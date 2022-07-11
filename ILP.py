@@ -61,15 +61,15 @@ def run():
         T = T_input
         #---------------------------- VARIABLES -----------------------------------------------------------
 
-        z = []
-        for i in range(n):
-            temp = []
-            for j in range(T):
-                temp.append(0)
-            z.append(temp)
-        for i in range(n):
-            for j in range(T):
-                z[i][j] = m.addVar(vtype=GRB.BINARY, name="z,%s" % str(i+1) + "," + str(j+1))
+        #z = []
+        #for i in range(n):
+        #    temp = []
+        #    for j in range(T):
+        #        temp.append(0)
+        #    z.append(temp)
+        #for i in range(n):
+        #    for j in range(T):
+        #        z[i][j] = m.addVar(vtype=GRB.BINARY, name="z,%s" % str(i+1) + "," + str(j+1))
 
         b = []
         for i in range(n):
