@@ -81,11 +81,11 @@ def run(k, max_time):
             for j in range(T):
                 s[i][j] = m.addVar(vtype=GRB.BINARY, name="s,%s" % str(i+1) + "," + str(j+1))
 
-        z = []
-        for i in range(n):
-            z.append(0)
-        for i in range(n):
-            z[i] = m.addVar(vtype=GRB.BINARY, name="z,%s" % str(i+1))
+        #z = []
+        #for i in range(n):
+        #    z.append(0)
+        #for i in range(n):
+        #    z[i] = m.addVar(vtype=GRB.BINARY, name="z,%s" % str(i+1))
         
         #---------------------------- CONSTRAINTS ---------------------------------------------------------
 
