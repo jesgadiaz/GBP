@@ -1,7 +1,7 @@
 # Mathematical formulations for graph burning
 This repository contains two mathematical formulations for the graph burning problem:
 
-| Name  | Description | Constraints | Variables |
+| Name  | Description | Variables | Constraints |
 | ------------- | ------------- | -------------  | ------------- |
 | ILP  | integer linear program  | O(nU) | O(nΔU) |
 | CSP1+BS  | constraint satisfaction problem 1 + binary search  | O(nB) | O(nΔU) |
