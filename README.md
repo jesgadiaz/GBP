@@ -4,8 +4,10 @@ This repository contains two mathematical formulations for the graph burning pro
 | Name  | Description | Variables | Constraints |
 | ------------- | ------------- | -------------  | ------------- |
 | ILP  | integer linear program  | O(nU) | O(nΔU) |
-| CSP1+BS  | constraint satisfaction problem 1 + binary search  | O(nB) | O(nΔU) |
-| CSP2+BS  | constraint satisfaction problem 2 + binary search  | O(n^2) | O(n^2) |
+| CSP1  | constraint satisfaction problem 1  | O(nB) | O(nΔU) |
+| CSP2  | constraint satisfaction problem 2  | O(n^2) | O(n^2) |
+
+CSP1+BS and CSP2+BS consist in adding each formulation within a bnary search. This way, each formulation is executed log n times with different guesses B on b(G).
 
 To execute the implemented formulations you need to install Gurobi.
 
