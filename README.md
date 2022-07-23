@@ -4,7 +4,7 @@ This repository contains two mathematical formulations for the graph burning pro
 | Name  | Description | Binarry Variables | Integer variables | Constraints |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | ILP  | integer linear program  | O(nU) | 0 | O(|E|U) |
-| CSP1  | constraint satisfaction problem 1 | 0 | O(nB) | O(|E|U) |
+| CSP1  | constraint satisfaction problem 1 | O(nB) | 0 | O(|E|U) |
 | CSP2  | constraint satisfaction problem 2 | O(n^2) | O(n) | O(n^2) |
 
 CSP1+BS and CSP2+BS consist in adding each formulation within a bnary search. This way, each formulation is executed log n times with different guesses B on b(G).
