@@ -138,7 +138,7 @@ def run():
             for j in range(T):
                 sum_ = 0
                 closed_neighbors = [n for n in G.neighbors(i)]
-                closed_neighbors.append(i)
+                #closed_neighbors.append(i)
                 for k in closed_neighbors:
                     if j == 0:
                         sum_ = sum_ + b0[k]
@@ -175,7 +175,7 @@ def run():
         m.setObjective(T - sum(b_prime), GRB.MINIMIZE)#------------------------(1)--
         
         # Set bounds
-        m.addConstr(T - sum(b_prime) <= T_input - 1)
+        #m.addConstr(T - sum(b_prime) <= T_input - 1)
         m.addConstr(T - sum(b_prime) >= L_input - 1)
                 
         #---------------------------- OPTIMIZATION -------------------------------------------------------
