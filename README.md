@@ -7,9 +7,7 @@ This repository contains two mathematical formulations for the graph burning pro
 | CSP1  | constraint satisfaction problem 1 | O(nB) | 0 | O(\|E\|U) |
 | CSP2  | constraint satisfaction problem 2 | O(n^2) | O(n) | O(n^2) |
 
-CSP1+BS and CSP2+BS consist in adding each formulation within a bnary search. This way, each formulation is executed log n times with different guesses B on b(G).
-
-# For more details, check the following paper
+CSP1+BS and CSP2+BS consist in adding each formulation within a bnary search. This way, each formulation is executed log n times with different guesses B on b(G). For more details, check the following paper
 
 García-Díaz, J.; Rodríguez-Henríquez, L.M.X.; Pérez-Sansalvador, J.C.; Pomares-Hernández, S.E. [Graph Burning: Mathematical Formulations and Optimal Solutions.](https://www.mdpi.com/2227-7390/10/15/2777) Mathematics 2022, 10, 2777. https://doi.org/10.3390/math10152777
 
