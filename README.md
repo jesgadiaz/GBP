@@ -1,5 +1,5 @@
 # Mathematical formulations for graph burning
-This repository contains two mathematical formulations for the graph burning problem:
+This repository contains three mathematical formulations for the graph burning problem:
 
 | Name  | Description | Binary Variables | Integer variables | Constraints |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
